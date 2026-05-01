@@ -1,82 +1,90 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using TreeDataStructures.Implementations.BST;
+﻿using TreeDataStructures.Core;
 
 namespace TreeDataStructures.Implementations.Splay;
 
-public class SplayTree<TKey, TValue> : BinarySearchTree<TKey, TValue>
+public class SplayTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, SplayNode<TKey, TValue>>
 {
-    protected override BstNode<TKey, TValue> CreateNode(TKey key, TValue value)
-        => new(key, value);
-    
-    protected override void OnNodeAdded(BstNode<TKey, TValue> newNode)
+    public SplayTree() : base(null) { }
+    public SplayTree(IComparer<TKey>? comparer = null) : base(comparer) { }
+
+    protected override SplayNode<TKey, TValue> CreateNode(TKey key, TValue value) 
+        => new SplayNode<TKey, TValue>(key, value);
+
+    protected override void OnNodeAdded(SplayNode<TKey, TValue> newNode)
     {
         Splay(newNode);
     }
- 
-    private void Splay(BstNode<TKey, TValue> x)
+
+    protected override void OnNodeRemoved(SplayNode<TKey, TValue>? parent, SplayNode<TKey, TValue>? child)
+    {
+        if (parent != null)
+        {
+            Splay(parent);
+        }
+    }
+    public override bool ContainsKey(TKey key)
+    {
+        var node = FindNode(key);
+        if (node != null)
+        {
+            Splay(node);
+            return true;
+        }
+        return false;
+    }
+
+    public override bool TryGetValue(TKey key, out TValue value)
+    {
+        var node = FindNode(key);
+        if (node != null)
+        {
+            Splay(node);
+            value = node.Value;
+            return true;
+        }
+        value = default!;
+        return false;
+    }
+
+    private void Splay(SplayNode<TKey, TValue> x)
     {
         while (x.Parent != null)
         {
             var p = x.Parent;
             var g = p.Parent;
 
-            if (g == null)
+            if (g == null) // Zig
             {
-                if (x == p.Left) RotateRight(p);
+                if (x.IsLeftChild) RotateRight(p);
                 else RotateLeft(p);
             }
-            else
+            else if (x.IsLeftChild == p.IsLeftChild) // Zig-Zig
             {
-                bool isPLeft = (g.Left == p);
-                bool isXLeft = (p.Left == x);
-
-                if (isPLeft == isXLeft)
+                if (x.IsLeftChild)
                 {
-                    if (isPLeft)
-                    {
-                        RotateRight(g);
-                        RotateRight(p);
-                    }
-                    else
-                    {
-                        RotateLeft(g);
-                        RotateLeft(p);
-                    }
+                    RotateRight(g);
+                    RotateRight(p);
                 }
                 else
                 {
-                    if (isPLeft) // LR
-                    {
-                        RotateLeft(p);
-                        RotateRight(g);
-                    }
-                    else // RL
-                    {
-                        RotateRight(p);
-                        RotateLeft(g);
-                    }
+                    RotateLeft(g);
+                    RotateLeft(p);
+                }
+            }
+            else // Zig-Zag
+            {
+                if (x.IsLeftChild)
+                {
+                    RotateRight(p);
+                    RotateLeft(g);
+                }
+                else
+                {
+                    RotateLeft(p);
+                    RotateRight(g);
                 }
             }
         }
         this.Root = x;
     }
-    protected override void OnNodeRemoved(BstNode<TKey, TValue>? parent, BstNode<TKey, TValue>? child)
-    {
-        if (parent != null) Splay(parent);
-    }
-    
-    public override bool TryGetValue(TKey key, out TValue value)
-    {
-        var node = FindNode(key);
-        if (node == null)
-        {
-            value = default!;
-            return false;
-        }
-        
-        Splay(node);
-        value = node.Value;
-        return true;
-    }
-    
-    }
+}
