@@ -7,11 +7,13 @@ public class RedBlackTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, RbN
 {
     protected override RbNode<TKey, TValue> CreateNode(TKey key, TValue value)
     {
-        throw new NotImplementedException();
+        return new RbNode<TKey, TValue>(key, value);
+        // throw new NotImplementedException();
     }
     
     protected override void OnNodeAdded(RbNode<TKey, TValue> newNode)
     {
+        
         throw new NotImplementedException();
     }
     protected override void OnNodeRemoved(RbNode<TKey, TValue>? parent, RbNode<TKey, TValue>? child)
