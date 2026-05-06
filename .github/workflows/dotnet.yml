@@ -3,7 +3,7 @@ name: .NET CI
 on: [push, pull_request]
 
 jobs:
-  build-and-test:
+  test-trees:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,16 +14,28 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Restore dependencies
-        run: dotnet restore
-
-      - name: Build
-        run: dotnet build --no-restore -c Release
-
-      - name: Run tests for BST, AVL, Treap, RB, Splay
+      - name: Restore and build
         run: |
-          dotnet test --no-build -c Release --filter "FullyQualifiedName~BST"
-          dotnet test --no-build -c Release --filter "FullyQualifiedName~AVL"
-          dotnet test --no-build -c Release --filter "FullyQualifiedName~Treap"
-          dotnet test --no-build -c Release --filter "FullyQualifiedName~RB"
-          dotnet test --no-build -c Release --filter "FullyQualifiedName~Splay"
+          dotnet restore
+          dotnet build TreeDataStructures/TreeDataStructures.csproj -c Release
+          dotnet build TreeDataStructures.Tests/TreeDataStructures.Tests.csproj -c Release
+
+      - name: Run AVL tests
+        run: |
+          dotnet test TreeDataStructures.Tests/TreeDataStructures.Tests.csproj --no-build -c Release --filter "Category=AVL"
+
+      - name: Run BST tests
+        run: |
+          dotnet test TreeDataStructures.Tests/TreeDataStructures.Tests.csproj --no-build -c Release --filter "Category=BST"
+
+      - name: Run Treap tests
+        run: |
+          dotnet test TreeDataStructures.Tests/TreeDataStructures.Tests.csproj --no-build -c Release --filter "Category=Treap"
+
+      - name: Run RB tests
+        run: |
+          dotnet test TreeDataStructures.Tests/TreeDataStructures.Tests.csproj --no-build -c Release --filter "Category=RB"
+
+      - name: Run Splay tests
+        run: |
+          dotnet test TreeDataStructures.Tests/TreeDataStructures.Tests.csproj --no-build -c Release --filter "Category=Splay"
