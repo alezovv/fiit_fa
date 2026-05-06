@@ -136,7 +136,7 @@ public class Treap<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, TreapNode<
         if (!removed) return false;
 
         Count--;
-        OnNodeRemoved(null, null);
+        OnNodeRemoved(null, null, null);
         return true;
     }
 
@@ -152,7 +152,8 @@ public class Treap<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, TreapNode<
     {
     }
     
-    protected override void OnNodeRemoved(TreapNode<TKey, TValue>? parent, TreapNode<TKey, TValue>? child)
+    protected override void OnNodeRemoved(TreapNode<TKey, TValue>? parent, TreapNode<TKey, TValue>? child, 
+        TreapNode<TKey, TValue>? deletedNode)
     {
     }
     

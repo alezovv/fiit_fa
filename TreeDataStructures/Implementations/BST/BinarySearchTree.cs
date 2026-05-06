@@ -15,7 +15,8 @@ public class BinarySearchTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue,
         //throw new NotImplementedException();
     }
     
-    protected override void OnNodeRemoved(BstNode<TKey, TValue>? parent, BstNode<TKey, TValue>? child)
+    protected override void OnNodeRemoved(BstNode<TKey, TValue>? parent, BstNode<TKey, TValue>? child, 
+        BstNode<TKey, TValue>? deletedNode)
     {
         //throw new NotImplementedException();
     }

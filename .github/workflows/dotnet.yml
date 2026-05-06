@@ -1,0 +1,29 @@
+name: .NET CI
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Run tests for BST, AVL, Treap, RB, Splay
+        run: |
+          dotnet test --no-build -c Release --filter "FullyQualifiedName~BST"
+          dotnet test --no-build -c Release --filter "FullyQualifiedName~AVL"
+          dotnet test --no-build -c Release --filter "FullyQualifiedName~Treap"
+          dotnet test --no-build -c Release --filter "FullyQualifiedName~RB"
+          dotnet test --no-build -c Release --filter "FullyQualifiedName~Splay"
