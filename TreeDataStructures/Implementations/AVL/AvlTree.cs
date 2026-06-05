@@ -13,7 +13,7 @@ public class AvlTree<TKey, TValue> : BinarySearchTreeBase<TKey, TValue, AvlNode<
         RebalanceFrom(newNode.Parent);
     }
 
-    protected override void OnNodeRemoved(AvlNode<TKey, TValue>? parent, AvlNode<TKey, TValue>? child, 
+    protected override void OnNodeRemoved(AvlNode<TKey, TValue>? parent, AvlNode<TKey, TValue>? child,
         AvlNode<TKey, TValue>? deletedNode)
     {
         RebalanceFrom(parent ?? child);
